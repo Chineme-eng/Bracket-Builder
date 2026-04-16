@@ -1,1 +1,691 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stream Bracket Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
 
+<style>
+  :root {
+    --bg: #f8f9fa;
+    --surface: #ffffff;
+    --surface-hover: #f1f3f5;
+    --border: #e9ecef;
+    --border-strong: #ced4da;
+    --text: #212529;
+    --text-muted: #868e96;
+    --primary: #3b82f6; /* Electric Blue for Brackets */
+    --primary-hover: #2563eb;
+    --primary-dim: rgba(59, 130, 246, 0.15);
+    --loser-bg: #e9ecef;
+    --loser-text: #adb5bd;
+    --shadow: 0 10px 40px rgba(0,0,0,0.08);
+  }
+
+  [data-theme="dark"] {
+    --bg: #0f1115;
+    --surface: #181a20;
+    --surface-hover: #22252e;
+    --border: #2b2f36;
+    --border-strong: #495057;
+    --text: #f8f9fa;
+    --text-muted: #8b949e;
+    --primary: #3b82f6;
+    --primary-hover: #2563eb;
+    --primary-dim: rgba(59, 130, 246, 0.2);
+    --loser-bg: #121419;
+    --loser-text: #495057;
+    --shadow: 0 10px 40px rgba(0,0,0,0.4);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    display: flex;
+    overflow: hidden;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* --- SIDEBAR CONTROLS --- */
+  .sidebar {
+    width: 340px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    z-index: 20;
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: 2px 0 20px rgba(0,0,0,0.1);
+  }
+
+  .sidebar.hidden {
+    transform: translateX(-100%);
+    position: absolute;
+    height: 100%;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+
+  h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+  
+  .controls-top { display: flex; gap: 8px; }
+
+  .icon-btn {
+    width: 36px; height: 36px;
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .icon-btn:hover { background: var(--border); }
+
+  .section-title {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin: 20px 0 10px 0;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .row { display: flex; gap: 10px; margin-bottom: 12px; align-items: center; justify-content: space-between; }
+  
+  select {
+    flex: 1;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    outline: none;
+    cursor: pointer;
+  }
+  
+  textarea {
+    width: 100%;
+    resize: none;
+    height: 250px;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.6;
+    outline: none;
+    margin-bottom: 8px;
+    transition: border-color 0.2s;
+    white-space: pre;
+  }
+  textarea:focus { border-color: var(--primary); }
+
+  .action-btn {
+    background: var(--primary);
+    color: white;
+    padding: 14px;
+    font-size: 14px;
+    font-family: inherit;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    margin-top: auto;
+  }
+  .action-btn:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 4px 12px var(--primary-dim); }
+  .action-btn:active { transform: translateY(0); }
+
+  /* --- MAIN STAGE --- */
+  .stage {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 40px;
+    overflow: hidden; /* We scale the bracket to fit, no scrollbars */
+  }
+
+  .gear-btn {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    width: 44px; height: 44px;
+    font-size: 20px;
+    background: var(--surface);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    z-index: 10;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+  .sidebar.hidden ~ .stage .gear-btn { opacity: 1; pointer-events: auto; }
+  .gear-btn:hover { color: var(--text); border-color: var(--text-muted); transform: rotate(20deg); }
+
+  /* --- BRACKET ARCHITECTURE --- */
+  .bracket-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease-out; /* Smooth scaling */
+    transform-origin: center center;
+  }
+
+  .bracket {
+    display: flex;
+    gap: 60px; /* Space between rounds */
+  }
+
+  .round {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    position: relative;
+  }
+
+  .match {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 10px 0;
+    position: relative;
+  }
+
+  /* Connecting Lines Generator */
+  .round:not(:last-child) .match::after {
+    content: '';
+    position: absolute;
+    right: -30px;
+    top: 50%;
+    width: 30px;
+    height: 2px;
+    background: var(--border-strong);
+    transform: translateY(-50%);
+    z-index: -1;
+  }
+  
+  .round:not(:first-child) .match::before {
+    content: '';
+    position: absolute;
+    left: -30px;
+    top: 50%;
+    width: 30px;
+    height: 2px;
+    background: var(--border-strong);
+    transform: translateY(-50%);
+    z-index: -1;
+  }
+
+  /* Vertical connecting lines between matches */
+  .round:not(:last-child) .match:nth-child(odd)::before {
+    content: '';
+    position: absolute;
+    right: -30px;
+    top: 50%;
+    width: 2px;
+    height: 50%;
+    background: var(--border-strong);
+    z-index: -1;
+  }
+  
+  .round:not(:last-child) .match:nth-child(even)::before {
+    content: '';
+    position: absolute;
+    right: -30px;
+    bottom: 50%;
+    width: 2px;
+    height: 50%;
+    background: var(--border-strong);
+    z-index: -1;
+  }
+
+  /* --- COMPETITOR SLOTS --- */
+  .slot {
+    width: 220px;
+    padding: 14px 16px;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: all 0.2s;
+    position: relative;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* Separation between top and bottom player in a match */
+  .slot:first-child { margin-bottom: 4px; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px; }
+  .slot:last-child { border-top-left-radius: 2px; border-top-right-radius: 2px; }
+
+  /* States */
+  .slot:hover:not(.empty) {
+    background: var(--surface-hover);
+    border-color: var(--primary);
+    transform: translateX(4px);
+  }
+
+  .slot.empty {
+    color: var(--text-muted);
+    font-weight: 500;
+    border-style: dashed;
+    cursor: default;
+  }
+
+  .slot.winner {
+    background: var(--primary-dim);
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+
+  .slot.loser {
+    background: var(--loser-bg);
+    border-color: var(--border);
+    color: var(--loser-text);
+    opacity: 0.6;
+    text-decoration: line-through;
+  }
+
+  /* --- CHAMPION NODE --- */
+  .champion-node {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .champion-slot {
+    width: 260px;
+    padding: 24px;
+    background: var(--surface);
+    border: 3px solid var(--primary);
+    border-radius: 16px;
+    font-size: 24px;
+    font-weight: 900;
+    text-align: center;
+    color: var(--text);
+    box-shadow: 0 10px 30px var(--primary-dim);
+    position: relative;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .champion-slot::before {
+    content: '👑 CHAMPION';
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary);
+    color: white;
+    font-size: 11px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    letter-spacing: 2px;
+  }
+
+  .champion-slot.active {
+    opacity: 1;
+    transform: scale(1);
+    background: var(--primary);
+    color: white;
+  }
+
+  .champion-slot.active::before { background: white; color: var(--primary); }
+
+  #confetti { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; }
+</style>
+</head>
+<body>
+
+<div class="sidebar hidden" id="sidebar">
+  <div class="header">
+    <h1>Bracket <span style="color: var(--primary)">Builder</span></h1>
+    <div class="controls-top">
+      <button class="icon-btn" id="themeBtn" title="Toggle App Theme">☀️</button>
+      <button class="icon-btn" id="closeSidebarBtn" title="Close Setup">✕</button>
+    </div>
+  </div>
+
+  <div class="section-title">Tournament Size</div>
+  <div class="row">
+    <select id="sizeSelect">
+      <option value="8">8 Competitors (Fast)</option>
+      <option value="16" selected>16 Competitors (Standard)</option>
+      <option value="32">32 Competitors (Epic)</option>
+    </select>
+  </div>
+
+  <div class="section-title">Competitors (One per line)</div>
+  <textarea id="itemsInput" spellcheck="false">Mario
+Sonic
+Master Chief
+Kratos
+Link
+Zelda
+Pikachu
+Donkey Kong
+Solid Snake
+Lara Croft
+Samus Aran
+Pac-Man
+Ryu
+Scorpion
+Cloud Strife
+Gordon Freeman</textarea>
+
+  <button class="action-btn" id="generateBtn">Generate Bracket</button>
+</div>
+
+<div class="stage" id="stage">
+  <button class="gear-btn" id="showSidebarBtn" title="Open Setup">⚙️</button>
+  
+  <div class="bracket-wrapper" id="bracketWrapper">
+    <div class="bracket" id="bracket"></div>
+  </div>
+
+  <canvas id="confetti"></canvas>
+</div>
+
+<script>
+// --- DOM ELEMENTS ---
+const sidebar = document.getElementById('sidebar');
+const sizeSelect = document.getElementById('sizeSelect');
+const itemsInput = document.getElementById('itemsInput');
+const generateBtn = document.getElementById('generateBtn');
+const bracketEl = document.getElementById('bracket');
+const bracketWrapper = document.getElementById('bracketWrapper');
+const stage = document.getElementById('stage');
+const themeBtn = document.getElementById('themeBtn');
+
+// --- THEME TOGGLE ---
+themeBtn.addEventListener('click', () => {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  themeBtn.innerText = isDark ? '🌙' : '☀️';
+});
+
+document.getElementById('closeSidebarBtn').addEventListener('click', () => sidebar.classList.add('hidden'));
+document.getElementById('showSidebarBtn').addEventListener('click', () => sidebar.classList.remove('hidden'));
+
+// --- BRACKET LOGIC ---
+let bracketData = []; // Multi-dimensional array: bracketData[round][match][slot]
+
+function generateBracket() {
+  // 1. Get competitors and requested size
+  const targetSize = parseInt(sizeSelect.value);
+  let rawItems = itemsInput.value.split('\n').map(i => i.trim()).filter(i => i !== '');
+  
+  // 2. Pad array with "TBD" if they didn't provide enough names
+  let competitors = [];
+  for (let i = 0; i < targetSize; i++) {
+    competitors.push(rawItems[i] || "TBD");
+  }
+
+  // 3. Initialize Data Structure
+  const numRounds = Math.log2(targetSize);
+  bracketData = [];
+
+  for (let r = 0; r < numRounds; r++) {
+    const matchesInRound = targetSize / Math.pow(2, r + 1);
+    let roundData = [];
+    for (let m = 0; m < matchesInRound; m++) {
+      if (r === 0) {
+        // First round gets the actual names
+        roundData.push([competitors[m * 2], competitors[m * 2 + 1]]);
+      } else {
+        // Future rounds are empty
+        roundData.push([null, null]);
+      }
+    }
+    bracketData.push(roundData);
+  }
+
+  renderBracket();
+  scaleToFit();
+  stopConfetti(); // Reset confetti if re-generating
+}
+
+function renderBracket() {
+  bracketEl.innerHTML = '';
+  
+  // Render Standard Rounds
+  bracketData.forEach((round, rIndex) => {
+    const roundDiv = document.createElement('div');
+    roundDiv.className = 'round';
+    
+    round.forEach((match, mIndex) => {
+      const matchDiv = document.createElement('div');
+      matchDiv.className = 'match';
+      
+      match.forEach((player, pIndex) => {
+        const slot = document.createElement('div');
+        slot.className = 'slot';
+        if (!player) slot.classList.add('empty');
+        
+        slot.innerText = player || 'Waiting...';
+        
+        // Interaction Logic
+        slot.onclick = () => handleSlotClick(rIndex, mIndex, pIndex, slot);
+        
+        matchDiv.appendChild(slot);
+      });
+      roundDiv.appendChild(matchDiv);
+    });
+    bracketEl.appendChild(roundDiv);
+  });
+
+  // Render Final Champion Node
+  const champRound = document.createElement('div');
+  champRound.className = 'round champion-node';
+  
+  const champSlot = document.createElement('div');
+  champSlot.className = 'champion-slot';
+  champSlot.id = 'championSlot';
+  champSlot.innerText = 'TBD';
+  
+  champRound.appendChild(champSlot);
+  bracketEl.appendChild(champRound);
+}
+
+function handleSlotClick(rIndex, mIndex, pIndex, clickedSlot) {
+  const playerName = bracketData[rIndex][mIndex][pIndex];
+  
+  // Can't click empty slots or TBDs
+  if (!playerName || playerName === 'TBD' || clickedSlot.classList.contains('empty')) return;
+
+  // Mark DOM states in the current match
+  const matchDiv = clickedSlot.parentElement;
+  const slots = matchDiv.querySelectorAll('.slot');
+  slots.forEach((s, idx) => {
+    s.classList.remove('winner', 'loser');
+    if (idx === pIndex) s.classList.add('winner');
+    else if (!s.classList.contains('empty')) s.classList.add('loser'); // Mark the other guy a loser
+  });
+
+  // Advance Logic
+  const nextRoundIndex = rIndex + 1;
+  const isFinal = nextRoundIndex === bracketData.length;
+
+  if (!isFinal) {
+    // Standard advance to next column
+    const nextMatchIndex = Math.floor(mIndex / 2);
+    const nextPlayerIndex = mIndex % 2; // 0 for top slot, 1 for bottom slot
+    
+    // Update data model
+    bracketData[nextRoundIndex][nextMatchIndex][nextPlayerIndex] = playerName;
+    
+    // Re-render just the subsequent rounds to show update
+    renderBracket();
+    restoreVisualStates(); // Keep the green/grey highlights intact after re-render
+  } else {
+    // Trigger Champion Mode
+    const champSlot = document.getElementById('championSlot');
+    champSlot.innerText = playerName;
+    champSlot.classList.add('active');
+    fireConfetti();
+  }
+}
+
+// Because re-rendering destroys DOM classes, we need to rebuild the visual tree state from data
+function restoreVisualStates() {
+  const roundDivs = bracketEl.querySelectorAll('.round:not(.champion-node)');
+  
+  for (let r = 0; r < bracketData.length - 1; r++) {
+    const currentRound = bracketData[r];
+    const nextRound = bracketData[r + 1];
+    
+    currentRound.forEach((match, mIndex) => {
+      const nextMatchIndex = Math.floor(mIndex / 2);
+      const nextPlayerIndex = mIndex % 2;
+      const advancedPlayer = nextRound[nextMatchIndex][nextPlayerIndex];
+      
+      if (advancedPlayer) {
+        const matchDiv = roundDivs[r].children[mIndex];
+        const slots = matchDiv.querySelectorAll('.slot');
+        
+        if (match[0] === advancedPlayer) {
+          slots[0].classList.add('winner');
+          slots[1].classList.add('loser');
+        } else if (match[1] === advancedPlayer) {
+          slots[1].classList.add('winner');
+          slots[0].classList.add('loser');
+        }
+      }
+    });
+  }
+}
+
+// --- DYNAMIC SCALING ENGINE ---
+// Keeps the bracket perfectly fitted inside the 16:9 stage window
+function scaleToFit() {
+  // Reset scale temporarily to measure natural size
+  bracketWrapper.style.transform = `scale(1)`;
+  
+  const stageWidth = stage.clientWidth - 80; // 40px padding on each side
+  const stageHeight = stage.clientHeight - 80;
+  
+  const bracketWidth = bracketEl.scrollWidth;
+  const bracketHeight = bracketEl.scrollHeight;
+  
+  const scaleX = stageWidth / bracketWidth;
+  const scaleY = stageHeight / bracketHeight;
+  
+  // Pick the smallest scale so it fits entirely, max scale 1 (don't stretch if small)
+  let scale = Math.min(scaleX, scaleY, 1);
+  
+  bracketWrapper.style.transform = `scale(${scale})`;
+}
+
+// Re-scale if user resizes browser
+window.addEventListener('resize', scaleToFit);
+
+// --- CONFETTI SYSTEM ---
+const cCanvas = document.getElementById('confetti');
+const cCtx = cCanvas.getContext('2d');
+let particles = [];
+let confettiActive = false;
+const colors = ["#3b82f6", "#2563eb", "#60a5fa", "#f8f9fa", "#eab308"];
+
+function fireConfetti() {
+  cCanvas.width = stage.clientWidth;
+  cCanvas.height = stage.clientHeight;
+  particles = [];
+  
+  for(let i=0; i<150; i++) {
+    particles.push({
+      x: cCanvas.width / 2, // Shoot from center (Champion slot)
+      y: cCanvas.height / 2, 
+      vx: (Math.random() - 0.5) * 35,
+      vy: (Math.random() - 1) * 25 - 10,
+      size: Math.random() * 12 + 6,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      rot: Math.random() * 360,
+      rotSpeed: (Math.random() - 0.5) * 15
+    });
+  }
+  
+  if(!confettiActive) {
+    confettiActive = true;
+    animateConfetti();
+  }
+}
+
+function animateConfetti() {
+  cCtx.clearRect(0, 0, cCanvas.width, cCanvas.height);
+  let active = false;
+  
+  particles.forEach(p => {
+    if(p.y < cCanvas.height + 50) { // Keep animating until off screen
+      active = true;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.8; // gravity
+      p.rot += p.rotSpeed;
+      
+      cCtx.save();
+      cCtx.translate(p.x, p.y);
+      cCtx.rotate(p.rot * Math.PI / 180);
+      cCtx.fillStyle = p.color;
+      cCtx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+      cCtx.restore();
+    }
+  });
+  
+  if(active) requestAnimationFrame(animateConfetti);
+  else confettiActive = false;
+}
+
+function stopConfetti() {
+  confettiActive = false;
+  cCtx.clearRect(0, 0, cCanvas.width, cCanvas.height);
+}
+
+// --- BOOT UP ---
+generateBtn.addEventListener('click', () => {
+  generateBracket();
+  // Auto-hide sidebar when generating so you are ready to record
+  sidebar.classList.add('hidden');
+});
+
+// Run once on load
+generateBracket();
+
+</script>
+</body>
+</html>
