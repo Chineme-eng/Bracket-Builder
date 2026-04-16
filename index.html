@@ -3,66 +3,69 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stream Bracket Pro</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+<title>Stream Bracket Ultimate</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
 
 <style>
   :root {
-    --bg: #f8f9fa;
-    --surface: #ffffff;
-    --surface-hover: #f1f3f5;
-    --border: #e9ecef;
-    --border-strong: #ced4da;
-    --text: #212529;
-    --text-muted: #868e96;
-    --primary: #3b82f6; /* Electric Blue for Brackets */
-    --primary-hover: #2563eb;
-    --primary-dim: rgba(59, 130, 246, 0.15);
-    --loser-bg: #e9ecef;
-    --loser-text: #adb5bd;
+    --bg: #e2e8f0;
+    --surface: rgba(255, 255, 255, 0.6);
+    --surface-hover: rgba(255, 255, 255, 0.9);
+    --border: rgba(148, 163, 184, 0.4);
+    --border-strong: #94a3b8;
+    --text: #0f172a;
+    --text-muted: #64748b;
+    --glow-color: #3b82f6;
+    --loser-bg: rgba(203, 213, 225, 0.4);
+    --loser-text: #94a3b8;
     --shadow: 0 10px 40px rgba(0,0,0,0.08);
   }
 
   [data-theme="dark"] {
-    --bg: #0f1115;
-    --surface: #181a20;
-    --surface-hover: #22252e;
-    --border: #2b2f36;
-    --border-strong: #495057;
-    --text: #f8f9fa;
-    --text-muted: #8b949e;
-    --primary: #3b82f6;
-    --primary-hover: #2563eb;
-    --primary-dim: rgba(59, 130, 246, 0.2);
-    --loser-bg: #121419;
-    --loser-text: #495057;
-    --shadow: 0 10px 40px rgba(0,0,0,0.4);
+    --bg: #0b0f19;
+    --surface: rgba(30, 41, 59, 0.6);
+    --surface-hover: rgba(30, 41, 59, 0.95);
+    --border: rgba(51, 65, 85, 0.6);
+    --border-strong: #475569;
+    --text: #f8fafc;
+    --text-muted: #64748b;
+    --glow-color: #3b82f6;
+    --loser-bg: rgba(15, 23, 42, 0.4);
+    --loser-text: #475569;
+    --shadow: 0 10px 40px rgba(0,0,0,0.6);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Outfit', sans-serif;
     background: var(--bg);
     color: var(--text);
     height: 100vh;
     display: flex;
     overflow: hidden;
     transition: background 0.3s, color 0.3s;
+    background-image: radial-gradient(circle at 50% 0%, var(--glow-color) 0%, transparent 40%);
+    background-size: 150% 150%;
+    background-position: top center;
   }
 
-  /* --- SIDEBAR CONTROLS --- */
+  /* --- SIDEBAR --- */
   .sidebar {
-    width: 340px;
+    width: 360px;
     background: var(--surface);
+    backdrop-filter: blur(20px);
     border-right: 1px solid var(--border);
     display: flex;
     flex-direction: column;
     padding: 24px;
-    z-index: 20;
+    z-index: 50;
     transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-    box-shadow: 2px 0 20px rgba(0,0,0,0.1);
+    box-shadow: 2px 0 20px rgba(0,0,0,0.2);
+    overflow-y: auto;
   }
+  .sidebar::-webkit-scrollbar { width: 6px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
 
   .sidebar.hidden {
     transform: translateX(-100%);
@@ -70,304 +73,153 @@
     height: 100%;
   }
 
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-  }
-
-  h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  h1 { font-size: 24px; font-weight: 900; letter-spacing: -0.5px; text-shadow: 0 2px 10px rgba(0,0,0,0.2); }
   
   .controls-top { display: flex; gap: 8px; }
-
   .icon-btn {
     width: 36px; height: 36px;
-    background: var(--surface);
+    background: var(--surface-hover);
     color: var(--text);
     border: 1px solid var(--border);
     border-radius: 8px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 16px;
-    cursor: pointer;
-    transition: all 0.2s;
+    font-size: 16px; cursor: pointer; transition: all 0.2s;
   }
   .icon-btn:hover { background: var(--border); }
 
   .section-title {
-    font-size: 11px;
-    font-weight: 800;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    margin: 20px 0 10px 0;
-    padding-bottom: 4px;
-    border-bottom: 1px solid var(--border);
+    font-size: 11px; font-weight: 800; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 1.5px;
+    margin: 16px 0 8px 0; padding-bottom: 4px; border-bottom: 1px solid var(--border);
   }
 
-  .row { display: flex; gap: 10px; margin-bottom: 12px; align-items: center; justify-content: space-between; }
-  
+  .row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; justify-content: space-between; }
   select {
-    flex: 1;
-    padding: 10px 12px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: var(--bg);
-    color: var(--text);
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 700;
-    outline: none;
-    cursor: pointer;
+    flex: 1; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border);
+    background: rgba(0,0,0,0.1); color: var(--text); font-family: inherit;
+    font-size: 13px; font-weight: 600; outline: none; cursor: pointer; backdrop-filter: blur(10px);
   }
   
   textarea {
-    width: 100%;
-    resize: none;
-    height: 250px;
-    padding: 14px;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    background: var(--bg);
-    color: var(--text);
-    font-family: inherit;
-    font-size: 14px;
-    line-height: 1.6;
-    outline: none;
-    margin-bottom: 8px;
-    transition: border-color 0.2s;
-    white-space: pre;
+    width: 100%; resize: none; height: 160px; padding: 14px; border-radius: 12px;
+    border: 1px solid var(--border); background: rgba(0,0,0,0.1); color: var(--text);
+    font-family: inherit; font-size: 13px; line-height: 1.5; outline: none; margin-bottom: 8px; white-space: pre;
   }
-  textarea:focus { border-color: var(--primary); }
+  textarea:focus { border-color: var(--glow-color); }
+  .hint { font-size: 11px; color: var(--text-muted); margin-bottom: 12px; font-style: italic; }
 
-  .action-btn {
-    background: var(--primary);
-    color: white;
-    padding: 14px;
-    font-size: 14px;
-    font-family: inherit;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.2s;
-    width: 100%;
-    margin-top: auto;
+  .btn {
+    background: var(--glow-color); color: white; padding: 14px; font-size: 14px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 1px; border: none; border-radius: 12px;
+    cursor: pointer; transition: all 0.2s; width: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
   }
-  .action-btn:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 4px 12px var(--primary-dim); }
-  .action-btn:active { transform: translateY(0); }
+  .btn:hover { filter: brightness(1.2); transform: translateY(-2px); }
+  .btn:active { transform: translateY(0); }
+  
+  .btn-outline {
+    background: transparent; border: 1px solid var(--border-strong); color: var(--text);
+    margin-top: 10px; box-shadow: none;
+  }
+  .btn-outline:hover { background: var(--surface-hover); }
 
   /* --- MAIN STAGE --- */
   .stage {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    padding: 40px;
-    overflow: hidden; /* We scale the bracket to fit, no scrollbars */
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    position: relative; padding: 40px; overflow: hidden;
   }
 
   .gear-btn {
-    position: absolute;
-    top: 24px;
-    left: 24px;
-    width: 44px; height: 44px;
-    font-size: 20px;
-    background: var(--surface);
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    color: var(--text-muted);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    z-index: 10;
-    opacity: 0;
-    pointer-events: none;
-    transition: all 0.3s;
-    cursor: pointer;
+    position: absolute; top: 24px; left: 24px; width: 44px; height: 44px; font-size: 20px;
+    background: var(--surface); backdrop-filter: blur(10px); border-radius: 12px;
+    border: 1px solid var(--border); color: var(--text-muted); box-shadow: var(--shadow);
+    z-index: 10; opacity: 0; pointer-events: none; transition: all 0.3s; cursor: pointer;
   }
   .sidebar.hidden ~ .stage .gear-btn { opacity: 1; pointer-events: auto; }
-  .gear-btn:hover { color: var(--text); border-color: var(--text-muted); transform: rotate(20deg); }
+  .gear-btn:hover { color: var(--text); border-color: var(--text-muted); transform: rotate(30deg); }
 
-  /* --- BRACKET ARCHITECTURE --- */
+  /* --- FOCUS MODE --- */
   .bracket-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.3s ease-out; /* Smooth scaling */
-    transform-origin: center center;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.3s ease-out; transform-origin: center center;
   }
+  .bracket-wrapper:hover .match { opacity: 0.3; filter: grayscale(50%); transition: all 0.3s; }
+  .bracket-wrapper .match:hover { opacity: 1; filter: grayscale(0%); z-index: 10; transform: scale(1.02); }
 
-  .bracket {
-    display: flex;
-    gap: 60px; /* Space between rounds */
-  }
+  .bracket { display: flex; gap: 70px; }
+  .round { display: flex; flex-direction: column; justify-content: space-around; position: relative; }
+  .match { display: flex; flex-direction: column; justify-content: center; margin: 12px 0; position: relative; transition: all 0.3s; }
 
-  .round {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    position: relative;
+  /* Connecting Lines */
+  .round:not(:last-child) .match::after, .round:not(:first-child) .match::before {
+    content: ''; position: absolute; top: 50%; width: 35px; height: 2px;
+    background: var(--border-strong); transform: translateY(-50%); z-index: -1;
   }
-
-  .match {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin: 10px 0;
-    position: relative;
-  }
-
-  /* Connecting Lines Generator */
-  .round:not(:last-child) .match::after {
-    content: '';
-    position: absolute;
-    right: -30px;
-    top: 50%;
-    width: 30px;
-    height: 2px;
-    background: var(--border-strong);
-    transform: translateY(-50%);
-    z-index: -1;
-  }
-  
-  .round:not(:first-child) .match::before {
-    content: '';
-    position: absolute;
-    left: -30px;
-    top: 50%;
-    width: 30px;
-    height: 2px;
-    background: var(--border-strong);
-    transform: translateY(-50%);
-    z-index: -1;
-  }
-
-  /* Vertical connecting lines between matches */
+  .round:not(:last-child) .match::after { right: -35px; }
+  .round:not(:first-child) .match::before { left: -35px; }
   .round:not(:last-child) .match:nth-child(odd)::before {
-    content: '';
-    position: absolute;
-    right: -30px;
-    top: 50%;
-    width: 2px;
-    height: 50%;
-    background: var(--border-strong);
-    z-index: -1;
+    content: ''; position: absolute; right: -35px; top: 50%; width: 2px; height: 50%; background: var(--border-strong); z-index: -1;
   }
-  
   .round:not(:last-child) .match:nth-child(even)::before {
-    content: '';
-    position: absolute;
-    right: -30px;
-    bottom: 50%;
-    width: 2px;
-    height: 50%;
-    background: var(--border-strong);
-    z-index: -1;
+    content: ''; position: absolute; right: -35px; bottom: 50%; width: 2px; height: 50%; background: var(--border-strong); z-index: -1;
   }
 
-  /* --- COMPETITOR SLOTS --- */
+  /* --- SLOTS & DRAG --- */
   .slot {
-    width: 220px;
-    padding: 14px 16px;
-    background: var(--surface);
-    border: 2px solid var(--border);
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--text);
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    transition: all 0.2s;
-    position: relative;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    width: 240px; padding: 10px 14px; background: var(--surface); backdrop-filter: blur(12px);
+    border: 1px solid var(--border); border-radius: 10px; font-size: 15px; font-weight: 700;
+    color: var(--text); cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    transition: all 0.2s; position: relative; display: flex; align-items: center; gap: 12px;
   }
+  .slot:first-child { margin-bottom: 6px; }
 
-  /* Separation between top and bottom player in a match */
-  .slot:first-child { margin-bottom: 4px; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px; }
-  .slot:last-child { border-top-left-radius: 2px; border-top-right-radius: 2px; }
+  /* Draggable */
+  .slot[draggable="true"] { cursor: grab; }
+  .slot[draggable="true"]:active { cursor: grabbing; transform: scale(0.98); opacity: 0.8; }
+  .slot.drag-over { border: 2px dashed var(--glow-color); background: var(--surface-hover); }
+
+  /* Images */
+  .slot-img {
+    width: 32px; height: 32px; border-radius: 6px; object-fit: cover;
+    background: rgba(0,0,0,0.1); flex-shrink: 0;
+  }
+  .slot-text { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* Labels (A, B, 1, 2) */
+  .match-label {
+    position: absolute; left: -14px; top: 50%; transform: translateY(-50%);
+    background: var(--glow-color); color: white; font-size: 10px; font-weight: 900;
+    width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3); z-index: 5; pointer-events: none;
+  }
 
   /* States */
-  .slot:hover:not(.empty) {
-    background: var(--surface-hover);
-    border-color: var(--primary);
-    transform: translateX(4px);
-  }
-
-  .slot.empty {
-    color: var(--text-muted);
-    font-weight: 500;
-    border-style: dashed;
-    cursor: default;
-  }
-
+  .slot:hover:not(.empty) { background: var(--surface-hover); border-color: var(--glow-color); }
+  .slot.empty { color: var(--text-muted); font-weight: 500; border-style: dashed; cursor: default; }
+  
+  /* Neon Glow Winner */
   .slot.winner {
-    background: var(--primary-dim);
-    border-color: var(--primary);
-    color: var(--primary);
+    background: var(--surface-hover); border-color: var(--glow-color);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.4), inset 0 0 10px rgba(59, 130, 246, 0.1);
   }
-
-  .slot.loser {
-    background: var(--loser-bg);
-    border-color: var(--border);
-    color: var(--loser-text);
-    opacity: 0.6;
-    text-decoration: line-through;
-  }
+  .slot.loser { background: var(--loser-bg); border-color: var(--border); color: var(--loser-text); opacity: 0.4; text-decoration: line-through; filter: grayscale(100%); }
 
   /* --- CHAMPION NODE --- */
-  .champion-node {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
+  .champion-node { display: flex; align-items: center; justify-content: center; }
   .champion-slot {
-    width: 260px;
-    padding: 24px;
-    background: var(--surface);
-    border: 3px solid var(--primary);
-    border-radius: 16px;
-    font-size: 24px;
-    font-weight: 900;
-    text-align: center;
-    color: var(--text);
-    box-shadow: 0 10px 30px var(--primary-dim);
-    position: relative;
-    opacity: 0;
-    transform: scale(0.8);
-    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    width: 300px; padding: 24px; background: var(--surface); backdrop-filter: blur(20px);
+    border: 2px solid var(--glow-color); border-radius: 20px; font-size: 28px; font-weight: 900;
+    text-align: center; color: var(--text); box-shadow: 0 0 40px rgba(59, 130, 246, 0.2);
+    position: relative; opacity: 0; transform: scale(0.8); transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: flex; flex-direction: column; align-items: center; gap: 16px;
   }
-
+  .champion-slot .champ-img { width: 100px; height: 100px; border-radius: 16px; object-fit: cover; box-shadow: 0 10px 20px rgba(0,0,0,0.3); display: none; }
   .champion-slot::before {
-    content: '👑 CHAMPION';
-    position: absolute;
-    top: -14px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--primary);
-    color: white;
-    font-size: 11px;
-    padding: 4px 12px;
-    border-radius: 20px;
-    letter-spacing: 2px;
+    content: '👑 CHAMPION'; position: absolute; top: -16px; left: 50%; transform: translateX(-50%);
+    background: var(--glow-color); color: white; font-size: 12px; padding: 6px 16px; border-radius: 20px; letter-spacing: 2px;
   }
-
-  .champion-slot.active {
-    opacity: 1;
-    transform: scale(1);
-    background: var(--primary);
-    color: white;
-  }
-
-  .champion-slot.active::before { background: white; color: var(--primary); }
-
+  .champion-slot.active { opacity: 1; transform: scale(1); box-shadow: 0 0 60px rgba(59, 130, 246, 0.5); border-width: 4px; }
+  
   #confetti { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; }
 </style>
 </head>
@@ -375,25 +227,48 @@
 
 <div class="sidebar hidden" id="sidebar">
   <div class="header">
-    <h1>Bracket <span style="color: var(--primary)">Builder</span></h1>
+    <h1>Bracket <span style="color: var(--glow-color)">Pro</span></h1>
     <div class="controls-top">
       <button class="icon-btn" id="themeBtn" title="Toggle App Theme">☀️</button>
       <button class="icon-btn" id="closeSidebarBtn" title="Close Setup">✕</button>
     </div>
   </div>
 
-  <div class="section-title">Tournament Size</div>
+  <div class="section-title">Settings</div>
   <div class="row">
     <select id="sizeSelect">
-      <option value="8">8 Competitors (Fast)</option>
-      <option value="16" selected>16 Competitors (Standard)</option>
-      <option value="32">32 Competitors (Epic)</option>
+      <option value="2">2 (Head-to-Head)</option>
+      <option value="4">4 (Final Four)</option>
+      <option value="8">8 (Fast)</option>
+      <option value="16" selected>16 (Standard)</option>
+      <option value="32">32 (Epic)</option>
+    </select>
+    <select id="labelSelect">
+      <option value="num">1, 2, 3...</option>
+      <option value="alpha">A, B, C...</option>
+      <option value="none">No Labels</option>
+    </select>
+  </div>
+  <div class="row">
+    <select id="paletteSelect">
+      <option value="rainbow">Palette: Neon Blue</option>
+      <option value="fire">Palette: Fire Red</option>
+      <option value="toxic">Palette: Toxic Green</option>
+      <option value="cyber">Palette: Cyberpunk Pink</option>
+      <option value="gold">Palette: Gold</option>
+    </select>
+    <select id="soundSelect">
+      <option value="fanfare">Sound: Fanfare</option>
+      <option value="arcade">Sound: Arcade Win</option>
+      <option value="airhorn">Sound: Airhorn</option>
+      <option value="none">Sound: Mute</option>
     </select>
   </div>
 
-  <div class="section-title">Competitors (One per line)</div>
-  <textarea id="itemsInput" spellcheck="false">Mario
-Sonic
+  <div class="section-title">Competitors</div>
+  <p class="hint">Format: Name | ImageURL (Optional)</p>
+  <textarea id="itemsInput" spellcheck="false">Mario | https://i.imgur.com/k6w9l01.jpeg
+Sonic | https://i.imgur.com/8zE7B0c.png
 Master Chief
 Kratos
 Link
@@ -409,82 +284,151 @@ Scorpion
 Cloud Strife
 Gordon Freeman</textarea>
 
-  <button class="action-btn" id="generateBtn">Generate Bracket</button>
+  <button class="btn" id="generateBtn">Generate Bracket</button>
+  <button class="btn btn-outline" id="undoBtn">↶ Undo Last Pick</button>
 </div>
 
 <div class="stage" id="stage">
   <button class="gear-btn" id="showSidebarBtn" title="Open Setup">⚙️</button>
-  
   <div class="bracket-wrapper" id="bracketWrapper">
     <div class="bracket" id="bracket"></div>
   </div>
-
   <canvas id="confetti"></canvas>
 </div>
 
 <script>
-// --- DOM ELEMENTS ---
+// --- COLOR PALETTES ---
+const PALETTES = {
+  rainbow: '#3b82f6', // Electric Blue
+  fire: '#ef4444',    // Red
+  toxic: '#10b981',   // Green
+  cyber: '#d946ef',   // Pink
+  gold: '#f59e0b'     // Amber
+};
+
+// --- DOM & STATE ---
 const sidebar = document.getElementById('sidebar');
 const sizeSelect = document.getElementById('sizeSelect');
+const labelSelect = document.getElementById('labelSelect');
+const paletteSelect = document.getElementById('paletteSelect');
+const soundSelect = document.getElementById('soundSelect');
 const itemsInput = document.getElementById('itemsInput');
-const generateBtn = document.getElementById('generateBtn');
 const bracketEl = document.getElementById('bracket');
 const bracketWrapper = document.getElementById('bracketWrapper');
 const stage = document.getElementById('stage');
 const themeBtn = document.getElementById('themeBtn');
+const undoBtn = document.getElementById('undoBtn');
 
-// --- THEME TOGGLE ---
+let bracketData = []; // [round][match][slot] = { name, img }
+let historyStack = []; // Deep copies of bracketData for Undo
+let dragSrcData = null; // For drag & drop
+
+// --- AUDIO SYNTHESIZER ---
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
+
+function playWinnerSound() {
+  const type = soundSelect.value;
+  if (type === 'none') return;
+  if (!audioCtx) audioCtx = new AudioContext();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+
+  const t = audioCtx.currentTime;
+  const masterGain = audioCtx.createGain();
+  masterGain.connect(audioCtx.destination);
+  masterGain.gain.value = 0.3;
+
+  function playNote(freq, type, time, duration) {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type; osc.frequency.value = freq;
+    osc.connect(gain); gain.connect(masterGain);
+    gain.gain.setValueAtTime(0, time);
+    gain.gain.linearRampToValueAtTime(1, time + 0.05);
+    gain.gain.setValueAtTime(1, time + duration - 0.1);
+    gain.gain.linearRampToValueAtTime(0, time + duration);
+    osc.start(time); osc.stop(time + duration);
+  }
+
+  if (type === 'fanfare') { // C4, E4, G4, C5 Arpeggio
+    playNote(261.63, 'square', t, 0.15);
+    playNote(329.63, 'square', t + 0.15, 0.15);
+    playNote(392.00, 'square', t + 0.30, 0.15);
+    playNote(523.25, 'square', t + 0.45, 0.6);
+  } else if (type === 'arcade') { // Fast climbing blips
+    for(let i=0; i<8; i++) playNote(400 + (i*100), 'square', t + (i*0.05), 0.05);
+    playNote(1200, 'square', t + 0.4, 0.4);
+  } else if (type === 'airhorn') { // Detuned saws
+    const freqs = [300, 305, 310];
+    freqs.forEach(f => playNote(f, 'sawtooth', t, 0.3));
+    freqs.forEach(f => playNote(f, 'sawtooth', t + 0.4, 0.3));
+    freqs.forEach(f => playNote(f, 'sawtooth', t + 0.8, 0.8));
+  }
+}
+
+// --- THEME & COLOR ---
 themeBtn.addEventListener('click', () => {
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
   document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
   themeBtn.innerText = isDark ? '🌙' : '☀️';
 });
 
+paletteSelect.addEventListener('change', (e) => {
+  document.documentElement.style.setProperty('--glow-color', PALETTES[e.target.value]);
+  // Update background gradient
+  document.body.style.backgroundImage = `radial-gradient(circle at 50% 0%, ${PALETTES[e.target.value]} 0%, transparent 40%)`;
+});
+
 document.getElementById('closeSidebarBtn').addEventListener('click', () => sidebar.classList.add('hidden'));
 document.getElementById('showSidebarBtn').addEventListener('click', () => sidebar.classList.remove('hidden'));
+labelSelect.addEventListener('change', () => renderBracket());
 
 // --- BRACKET LOGIC ---
-let bracketData = []; // Multi-dimensional array: bracketData[round][match][slot]
+function parseInput() {
+  const raw = itemsInput.value.split('\n').map(i => i.trim()).filter(i => i !== '');
+  return raw.map(line => {
+    const parts = line.split('|').map(p => p.trim());
+    return { name: parts[0], img: parts[1] || null };
+  });
+}
 
 function generateBracket() {
-  // 1. Get competitors and requested size
   const targetSize = parseInt(sizeSelect.value);
-  let rawItems = itemsInput.value.split('\n').map(i => i.trim()).filter(i => i !== '');
+  let competitors = parseInput();
   
-  // 2. Pad array with "TBD" if they didn't provide enough names
-  let competitors = [];
-  for (let i = 0; i < targetSize; i++) {
-    competitors.push(rawItems[i] || "TBD");
-  }
+  // Pad if missing
+  while(competitors.length < targetSize) competitors.push({ name: "TBD", img: null });
+  // Trim if too many
+  competitors = competitors.slice(0, targetSize);
 
-  // 3. Initialize Data Structure
   const numRounds = Math.log2(targetSize);
   bracketData = [];
+  historyStack = [];
 
   for (let r = 0; r < numRounds; r++) {
     const matchesInRound = targetSize / Math.pow(2, r + 1);
     let roundData = [];
     for (let m = 0; m < matchesInRound; m++) {
-      if (r === 0) {
-        // First round gets the actual names
-        roundData.push([competitors[m * 2], competitors[m * 2 + 1]]);
-      } else {
-        // Future rounds are empty
-        roundData.push([null, null]);
-      }
+      if (r === 0) roundData.push([competitors[m*2], competitors[m*2+1]]);
+      else roundData.push([null, null]);
     }
     bracketData.push(roundData);
   }
 
   renderBracket();
-  scaleToFit();
-  stopConfetti(); // Reset confetti if re-generating
+  stopConfetti();
+}
+
+function getLabel(index) {
+  const mode = labelSelect.value;
+  if(mode === 'none') return '';
+  if(mode === 'num') return index + 1;
+  return String.fromCharCode(65 + index); // A, B, C...
 }
 
 function renderBracket() {
   bracketEl.innerHTML = '';
   
-  // Render Standard Rounds
   bracketData.forEach((round, rIndex) => {
     const roundDiv = document.createElement('div');
     roundDiv.className = 'round';
@@ -493,16 +437,55 @@ function renderBracket() {
       const matchDiv = document.createElement('div');
       matchDiv.className = 'match';
       
+      // Label
+      const labelTxt = getLabel(mIndex);
+      if(labelTxt && rIndex === 0) {
+        const lbl = document.createElement('div');
+        lbl.className = 'match-label';
+        lbl.innerText = labelTxt;
+        matchDiv.appendChild(lbl);
+      }
+      
       match.forEach((player, pIndex) => {
         const slot = document.createElement('div');
         slot.className = 'slot';
-        if (!player) slot.classList.add('empty');
         
-        slot.innerText = player || 'Waiting...';
+        if (!player) {
+          slot.classList.add('empty');
+          slot.innerHTML = `<span class="slot-text">Waiting...</span>`;
+        } else {
+          let innerHTML = '';
+          if (player.img) innerHTML += `<img src="${player.img}" class="slot-img">`;
+          innerHTML += `<span class="slot-text">${player.name}</span>`;
+          slot.innerHTML = innerHTML;
+          
+          if(player.name === 'TBD') slot.classList.add('empty');
+          
+          // Drag & Drop for Round 0
+          if(rIndex === 0) {
+            slot.draggable = true;
+            slot.addEventListener('dragstart', (e) => {
+              dragSrcData = { r: rIndex, m: mIndex, p: pIndex, data: player };
+              e.dataTransfer.effectAllowed = 'move';
+              slot.style.opacity = '0.4';
+            });
+            slot.addEventListener('dragend', () => slot.style.opacity = '1');
+            slot.addEventListener('dragover', (e) => { e.preventDefault(); slot.classList.add('drag-over'); });
+            slot.addEventListener('dragleave', () => slot.classList.remove('drag-over'));
+            slot.addEventListener('drop', (e) => {
+              e.preventDefault(); slot.classList.remove('drag-over');
+              if(dragSrcData && dragSrcData.r === 0) {
+                // Swap data
+                const targetData = bracketData[rIndex][mIndex][pIndex];
+                bracketData[rIndex][mIndex][pIndex] = dragSrcData.data;
+                bracketData[dragSrcData.r][dragSrcData.m][dragSrcData.p] = targetData;
+                renderBracket();
+              }
+            });
+          }
+        }
         
-        // Interaction Logic
-        slot.onclick = () => handleSlotClick(rIndex, mIndex, pIndex, slot);
-        
+        slot.onclick = () => handleSlotClick(rIndex, mIndex, pIndex, player);
         matchDiv.appendChild(slot);
       });
       roundDiv.appendChild(matchDiv);
@@ -510,62 +493,77 @@ function renderBracket() {
     bracketEl.appendChild(roundDiv);
   });
 
-  // Render Final Champion Node
+  // Final Champion Node
   const champRound = document.createElement('div');
   champRound.className = 'round champion-node';
-  
   const champSlot = document.createElement('div');
   champSlot.className = 'champion-slot';
   champSlot.id = 'championSlot';
-  champSlot.innerText = 'TBD';
-  
+  champSlot.innerHTML = `<img class="champ-img" id="champImg"><span id="champName">TBD</span>`;
   champRound.appendChild(champSlot);
   bracketEl.appendChild(champRound);
+  
+  restoreVisualStates();
+  scaleToFit();
 }
 
-function handleSlotClick(rIndex, mIndex, pIndex, clickedSlot) {
-  const playerName = bracketData[rIndex][mIndex][pIndex];
-  
-  // Can't click empty slots or TBDs
-  if (!playerName || playerName === 'TBD' || clickedSlot.classList.contains('empty')) return;
+function handleSlotClick(rIndex, mIndex, pIndex, player) {
+  if (!player || player.name === 'TBD') return;
 
-  // Mark DOM states in the current match
-  const matchDiv = clickedSlot.parentElement;
-  const slots = matchDiv.querySelectorAll('.slot');
-  slots.forEach((s, idx) => {
-    s.classList.remove('winner', 'loser');
-    if (idx === pIndex) s.classList.add('winner');
-    else if (!s.classList.contains('empty')) s.classList.add('loser'); // Mark the other guy a loser
-  });
-
-  // Advance Logic
   const nextRoundIndex = rIndex + 1;
   const isFinal = nextRoundIndex === bracketData.length;
+  const nextMatchIndex = Math.floor(mIndex / 2);
+  const nextPlayerIndex = mIndex % 2;
+
+  // Don't overwrite if we already advanced someone here and they advanced further
+  // Actually, allow overwriting but clear future paths (handled via undo ideally, but we will force overwrite)
+
+  // Save state for UNDO
+  historyStack.push(JSON.parse(JSON.stringify(bracketData)));
 
   if (!isFinal) {
-    // Standard advance to next column
-    const nextMatchIndex = Math.floor(mIndex / 2);
-    const nextPlayerIndex = mIndex % 2; // 0 for top slot, 1 for bottom slot
+    bracketData[nextRoundIndex][nextMatchIndex][nextPlayerIndex] = player;
+    // Clear any future path for the loser if they previously won
+    const loser = bracketData[rIndex][mIndex][pIndex === 0 ? 1 : 0];
+    if(loser) clearFutureWins(loser, nextRoundIndex);
     
-    // Update data model
-    bracketData[nextRoundIndex][nextMatchIndex][nextPlayerIndex] = playerName;
-    
-    // Re-render just the subsequent rounds to show update
     renderBracket();
-    restoreVisualStates(); // Keep the green/grey highlights intact after re-render
   } else {
-    // Trigger Champion Mode
+    // CHAMPION WIN
+    renderBracket(); // refresh colors
     const champSlot = document.getElementById('championSlot');
-    champSlot.innerText = playerName;
+    document.getElementById('champName').innerText = player.name;
+    const img = document.getElementById('champImg');
+    if(player.img) { img.src = player.img; img.style.display = 'block'; }
     champSlot.classList.add('active');
+    playWinnerSound();
     fireConfetti();
   }
 }
 
-// Because re-rendering destroys DOM classes, we need to rebuild the visual tree state from data
+function clearFutureWins(playerObj, startRound) {
+  for(let r = startRound; r < bracketData.length; r++) {
+    for(let m = 0; m < bracketData[r].length; m++) {
+      for(let p = 0; p < 2; p++) {
+        if(bracketData[r][m][p] && bracketData[r][m][p].name === playerObj.name) {
+          bracketData[r][m][p] = null;
+        }
+      }
+    }
+  }
+}
+
+document.getElementById('undoBtn').addEventListener('click', () => {
+  if(historyStack.length > 0) {
+    bracketData = historyStack.pop();
+    document.getElementById('championSlot').classList.remove('active');
+    stopConfetti();
+    renderBracket();
+  }
+});
+
 function restoreVisualStates() {
   const roundDivs = bracketEl.querySelectorAll('.round:not(.champion-node)');
-  
   for (let r = 0; r < bracketData.length - 1; r++) {
     const currentRound = bracketData[r];
     const nextRound = bracketData[r + 1];
@@ -578,114 +576,72 @@ function restoreVisualStates() {
       if (advancedPlayer) {
         const matchDiv = roundDivs[r].children[mIndex];
         const slots = matchDiv.querySelectorAll('.slot');
-        
-        if (match[0] === advancedPlayer) {
-          slots[0].classList.add('winner');
-          slots[1].classList.add('loser');
-        } else if (match[1] === advancedPlayer) {
-          slots[1].classList.add('winner');
-          slots[0].classList.add('loser');
+        if (match[0] && match[0].name === advancedPlayer.name) {
+          slots[0].classList.add('winner'); slots[1].classList.add('loser');
+        } else if (match[1] && match[1].name === advancedPlayer.name) {
+          slots[1].classList.add('winner'); slots[0].classList.add('loser');
         }
       }
     });
   }
 }
 
-// --- DYNAMIC SCALING ENGINE ---
-// Keeps the bracket perfectly fitted inside the 16:9 stage window
+// --- DYNAMIC SCALING ---
 function scaleToFit() {
-  // Reset scale temporarily to measure natural size
   bracketWrapper.style.transform = `scale(1)`;
-  
-  const stageWidth = stage.clientWidth - 80; // 40px padding on each side
-  const stageHeight = stage.clientHeight - 80;
-  
-  const bracketWidth = bracketEl.scrollWidth;
-  const bracketHeight = bracketEl.scrollHeight;
-  
-  const scaleX = stageWidth / bracketWidth;
-  const scaleY = stageHeight / bracketHeight;
-  
-  // Pick the smallest scale so it fits entirely, max scale 1 (don't stretch if small)
-  let scale = Math.min(scaleX, scaleY, 1);
-  
+  const padding = 100;
+  const scaleX = (stage.clientWidth - padding) / bracketEl.scrollWidth;
+  const scaleY = (stage.clientHeight - padding) / bracketEl.scrollHeight;
+  let scale = Math.min(scaleX, scaleY, 1.2); // allow slight upscale
   bracketWrapper.style.transform = `scale(${scale})`;
 }
-
-// Re-scale if user resizes browser
 window.addEventListener('resize', scaleToFit);
 
 // --- CONFETTI SYSTEM ---
 const cCanvas = document.getElementById('confetti');
 const cCtx = cCanvas.getContext('2d');
-let particles = [];
-let confettiActive = false;
-const colors = ["#3b82f6", "#2563eb", "#60a5fa", "#f8f9fa", "#eab308"];
+let particles = [], confettiActive = false;
+const confColors = ["#3b82f6", "#2563eb", "#60a5fa", "#f8f9fa", "#eab308"];
 
 function fireConfetti() {
-  cCanvas.width = stage.clientWidth;
-  cCanvas.height = stage.clientHeight;
+  cCanvas.width = stage.clientWidth; cCanvas.height = stage.clientHeight;
   particles = [];
-  
   for(let i=0; i<150; i++) {
     particles.push({
-      x: cCanvas.width / 2, // Shoot from center (Champion slot)
-      y: cCanvas.height / 2, 
-      vx: (Math.random() - 0.5) * 35,
-      vy: (Math.random() - 1) * 25 - 10,
-      size: Math.random() * 12 + 6,
-      color: colors[Math.floor(Math.random() * colors.length)],
-      rot: Math.random() * 360,
-      rotSpeed: (Math.random() - 0.5) * 15
+      x: cCanvas.width / 2, y: cCanvas.height / 2, 
+      vx: (Math.random() - 0.5) * 35, vy: (Math.random() - 1) * 25 - 10,
+      size: Math.random() * 12 + 6, color: confColors[Math.floor(Math.random() * confColors.length)],
+      rot: Math.random() * 360, rotSpeed: (Math.random() - 0.5) * 15
     });
   }
-  
-  if(!confettiActive) {
-    confettiActive = true;
-    animateConfetti();
-  }
+  if(!confettiActive) { confettiActive = true; animateConfetti(); }
 }
 
 function animateConfetti() {
   cCtx.clearRect(0, 0, cCanvas.width, cCanvas.height);
   let active = false;
-  
   particles.forEach(p => {
-    if(p.y < cCanvas.height + 50) { // Keep animating until off screen
-      active = true;
-      p.x += p.vx;
-      p.y += p.vy;
-      p.vy += 0.8; // gravity
-      p.rot += p.rotSpeed;
-      
-      cCtx.save();
-      cCtx.translate(p.x, p.y);
-      cCtx.rotate(p.rot * Math.PI / 180);
-      cCtx.fillStyle = p.color;
-      cCtx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+    if(p.y < cCanvas.height + 50) {
+      active = true; p.x += p.vx; p.y += p.vy; p.vy += 0.8; p.rot += p.rotSpeed;
+      cCtx.save(); cCtx.translate(p.x, p.y); cCtx.rotate(p.rot * Math.PI / 180);
+      cCtx.fillStyle = p.color; cCtx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
       cCtx.restore();
     }
   });
-  
-  if(active) requestAnimationFrame(animateConfetti);
-  else confettiActive = false;
+  if(active) requestAnimationFrame(animateConfetti); else confettiActive = false;
 }
 
-function stopConfetti() {
-  confettiActive = false;
-  cCtx.clearRect(0, 0, cCanvas.width, cCanvas.height);
-}
+function stopConfetti() { confettiActive = false; cCtx.clearRect(0, 0, cCanvas.width, cCanvas.height); }
 
-// --- BOOT UP ---
-generateBtn.addEventListener('click', () => {
+// Boot
+document.getElementById('generateBtn').addEventListener('click', () => {
   generateBracket();
-  // Auto-hide sidebar when generating so you are ready to record
   sidebar.classList.add('hidden');
 });
-
-// Run once on load
 generateBracket();
 
+// Initial palette apply
+document.documentElement.style.setProperty('--glow-color', PALETTES['rainbow']);
 </script>
 </body>
 </html>
