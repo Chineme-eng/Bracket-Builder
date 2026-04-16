@@ -102,10 +102,22 @@
   }
   select:focus { border-color: var(--glow-color); }
   
-  textarea {
-    width: 100%; resize: none; height: 160px; padding: 16px; border-radius: 12px;
-    border: 2px solid var(--border); background: var(--input-bg); color: var(--text);
-    font-family: inherit; font-size: 14px; line-height: 1.6; outline: none; margin-bottom: 8px; white-space: pre;
+ textarea {
+    width: 100%; 
+    min-height: 200px; /* Starts a bit taller */
+    resize: vertical; /* Lets you drag the bottom corner to make it bigger! */
+    padding: 16px; 
+    border-radius: 12px;
+    border: 2px solid var(--border); 
+    background: var(--input-bg); 
+    color: var(--text);
+    font-family: inherit; 
+    font-size: 14px; 
+    line-height: 1.6; 
+    outline: none; 
+    margin-bottom: 8px; 
+    white-space: pre-wrap; /* Forces long image URLs to wrap onto the next line */
+    overflow-y: auto; /* Guarantees the vertical scrollbar is active */
     transition: border-color 0.2s;
   }
   textarea:focus { border-color: var(--glow-color); }
@@ -251,9 +263,21 @@ input[type="text"]:focus { border-color: var(--glow-color); }
   }
   .champion-slot .champ-img { width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--glow-color); object-fit: cover; box-shadow: 0 10px 20px rgba(0,0,0,0.3); display: none; }
   .champion-slot::before {
-    content: '👑 CHAMPION'; position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
-    background: var(--glow-color); color: white; font-size: 14px; padding: 8px 20px; border-radius: 20px; letter-spacing: 2px;
-  }
+  content: '👑 CHAMPION';
+  position: absolute;
+  top: -30px; /* Moves it further up away from the circle */
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--glow-color);
+  color: white;
+  font-size: 8px; /* Reduced font size */
+  padding: 2px 8px; /* Tighter padding for a smaller badge */
+  border-radius: 20px;
+  letter-spacing: 1.5px;
+  white-space: nowrap;
+  font-weight: 900;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
   .champion-slot.active { opacity: 1; transform: scale(1); box-shadow: 0 0 50px rgba(59, 130, 246, 0.3); }
   
   #confetti { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; }
