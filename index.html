@@ -131,6 +131,34 @@
     position: relative; padding: 60px; overflow: hidden;
   }
 
+/* --- TOURNAMENT TITLE --- */
+input[type="text"] {
+  width: 100%; padding: 12px; border-radius: 10px; border: 2px solid var(--border);
+  background: var(--input-bg); color: var(--text); font-family: inherit;
+  font-size: 14px; font-weight: 600; outline: none; transition: border-color 0.2s;
+  margin-bottom: 12px;
+}
+input[type="text"]:focus { border-color: var(--glow-color); }
+
+.tournament-title {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.tournament-title span {
+  color: var(--text);
+  text-shadow: 0 0 20px var(--glow-color);
+}
+  
   .gear-btn {
     position: absolute; top: 24px; left: 24px; width: 48px; height: 48px; font-size: 22px;
     background: var(--surface); border-radius: 12px;
@@ -277,6 +305,9 @@
     </select>
   </div>
 
+<div class="section-title">Tournament Name</div>
+  <input type="text" id="titleInput" placeholder="e.g. Video Games, Fast Food..." value="Video Games">
+  
   <div class="section-title">Competitors</div>
   <p class="hint">Format: Name | ImageURL (Optional)</p>
   <textarea id="itemsInput" spellcheck="false">Mario | https://th.bing.com/th/id/OIP.ng5JGd3by2d4YAKrrlpNiAHaEK?w=329&h=185&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3
@@ -302,6 +333,7 @@ Gordon Freeman</textarea>
 
 <div class="stage" id="stage">
   <button class="gear-btn" id="showSidebarBtn" title="Open Setup">⚙️</button>
+ <div class="tournament-title" id="stageTitle">Battle of the <span>Video Games</span></div>
   <div class="bracket-wrapper" id="bracketWrapper">
     <div class="bracket" id="bracket"></div>
   </div>
@@ -335,6 +367,15 @@ let bracketData = [];
 let historyStack = []; 
 let dragSrcData = null; 
 
+const titleInput = document.getElementById('titleInput');
+const stageTitle = document.getElementById('stageTitle');
+
+// Update the title live as you type in the setup
+titleInput.addEventListener('input', (e) => {
+  const category = e.target.value || '...';
+  stageTitle.innerHTML = `Battle of the <span>${category}</span>`;
+});
+  
 // --- AUDIO SYNTHESIZER ---
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 let audioCtx = null;
